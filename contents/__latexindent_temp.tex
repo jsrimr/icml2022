@@ -1,0 +1,104 @@
+
+
+\section{Incremental Scaling differentiating stages}
+\label{sec:proposed}
+
+\begin{figure*}[t]
+    \centering
+    % \fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+     \includegraphics[width=0.8\linewidth]{Figures/depth-width-resol-saturation.png}
+     \caption{Depth and width saturates faster than resolution}
+     \label{fig:depth-width-fast-saturation}
+\end{figure*}
+
+\subsection{Incremental Scaling}
+Figure 3 presents our framework. Our intention is to find the optimal allocation of computations by
+enlarging depth, width and input resolution for each stage under constrained computations. So as to
+maximize the utilization of MACs, as shown in Eq. 1. 
+For each stage i in the network, we try to find its optimal depth di and width wi. 
+The optimal input size r of resolution is searched to match the specialized width and depth.
+In the problem1, r, d, w have discrete values and massive combinations.
+Deep learning is both time and resource consuming.
+Due to the extreme complexity, traditional mathematical optimization method is impracticable.
+So we turn to efficient neural architecture search method.
+To simply the search complexity, we first introduce an assumption. 
+Finding the global optimal model is difficult with the massive search space, so we can smooth the target to find a top-performing configuration of target MACs. 
+We introduce an assumption that the top-performing smaller CNNs are a proper subcomponent of the top-performing larger CNNs, as shown in Assumption 1. 
+Resnet [10], VGG [29], EfficientNet [31] etc., fit this assumption perfectly. 
+This assumption enables the idea of efficient search algorithm via greedy network enlarging.
+
+In this section, we describe the proposed network enlarging method based on greedy allocation of MACs.
+Firstly, we define the goal of our method to find the optimal depth and width of each stage and the input resolution.
+Secondly, we introduce the main algorithm of greedy network enlarging.
+Further, we introduce how to efficiently evaluate the performance of candidate models.
+
+
+In the algorithm, we use exponential increment of MACs in the process of search. 
+This way make the changes of network more gentaly in contrast to uniform increment. 
+For each iteration in Algorithm 1, in order to find the local optimal architecture configuration, 
+we have to search and evaluate the candidate architectures. 
+This step contains two targets: the first is to find the candidate architectures under limited increase of MACs; 
+the second is to find the local optimal architectures with maximum validation accuracy. 
+In the step of acquiring candidates, we consider the increase of resolution separately, which reduces the candidates. 
+The increase of width and depth of each stage is on the basis of corresponding resolution.
+
+\subsection{Resol based scaling}
+
+The modern CNN backbone architectures usually consists of a stem layer, network body and a head [23, 10, 31]. The main MACs and parameters burdens lie in the network body, as typically the stem layer is a convolutional layer and the head is a fully-connected layer. Thus, in this paper we focus on the scaling strategy of network body. The network body consists of several stages [23], which are defined as a sequence of layers or blocks with the same spatial size. For example, ResNet50 [10] body is composed of 4 stages with 56 × 56, 28 × 28, 14 × 14, and 7 × 7 output sizes, respectively.
+Scaling up convolutional neural networks is widely used to achieve better accuracy. Network depth, width and input resolution are three key factors for model scaling. Deeper convolutional neural networks capture richer and more complex features, and usually have high performance in contrast to shallow network. With the help of shortcuts, very deep network can be trained to convergence. However, the improvements on accuracy become smaller with the increase of depth. Another direction is scaling the width of network. More kernels mean more fine grained features can be learned. However, the MACs is squared with the width. As a result, the network depth will be constrained and high level features maybe loss. EfficientNet [31] showed that the accuracy quickly saturates when networks become wider. Higher resolution provide rich fine-grained information. In order to match high resolution, more powerful network is wanted. Deeper and wider network can acquire large receptive field and capture fine grained features.
+
+As a result, the network depth, width and resolution are not independent. These three dimension have various combinations. And one unified principle can not acquire the best configuration for all tasks. In this paper, we decompose the network depth, width and resolution into stage depth, width and input resolution. This will maximize the utilization of computations for each stage and the whole network.
+
+
+Given a base network N with L stages, width and depth are w, d = (w1, w2, ..., wL, d1, d2, ..., dL), and input resolution is r. The objective is to acquire the network architecture with best performance by optimizing the allocation of target MACs T :
+\RestyleAlgo{ruled}
+
+% https://ko.overleaf.com/learn/latex/Mathematical_fonts
+\begin{algorithm}
+    \caption{Incremental Scaling}\label{alg:IncrementalScaling}
+    \KwResult{Configurations}
+    \kwInit{Base Network $\mathbb{N}$ with ${B_0}$ MACs and L stages: width ${w^0} = (w^0_1, w^0_2, \ldots, w^0_L) $,
+    depth ${d^0 = (d^0_1, d^0_2, \ldots, d^0_L)}$ and input resolution ${r^0}$. Total dimension of search space is (2L+1).
+    The target MACs of ouput network is T and the rate of error is ${\delta}$. The search number is N. Initialize the set of optimal sub-configurations as ${S = \{ (r^0, d^0, w^0) \} }$,
+    the growth rate of resolution ${s_r}$;}
+
+
+     \While{${i \leq N}$ do}{
+      current target MACs : ${T_i = B_0 \times (\frac{T}{B_0})^\frac{i}{N}; }$
+      current candidates C = [];
+
+      \For{$i = 0;\ i < 10;\ i = i + 2$}{
+    Do something\;
+  }
+    %   \For
+
+      \eIf{condition}{
+       instructions1\;
+       instructions2\;
+       }{
+       instructions3\;
+      }
+     }
+\end{algorithm}
+
+
+We found that resolution is not selected because it increases latency more than width and depth.
+However, without resolution scaling, accuracy saturates fast. This is also reported in EfficientNetV2[].
+As a result, we add a idea of encompass resol direction when depth or width scaling shows a sign of saturation.
+Then, we explore depth and width direction again.
+\begin{algorithm}
+    \caption{Resol Based Incremental Scaling}\label{alg:ResolBasedIncrementalScaling}
+    \KwData{Write here the required data}
+    \KwResult{Write here the expected result}
+     initialization\;
+
+     \While{While condition}{
+      instructions\;
+      \eIf{condition}{
+       instructions1\;
+       instructions2\;
+       }{
+       instructions3\;
+      }
+     }
+\end{algorithm}
