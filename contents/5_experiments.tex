@@ -42,6 +42,40 @@ On the other hand, our method utilizes all skills and learns how to use various 
 In \cref*{final_skill_weight}, we can check the agent use skills near evenly.
 This allows for faster and better performance, as shown in the \cref{walker-run-simple-weight}.
 
+\begin{table}[t]
+  \caption{Performance at finetuning}
+  \label{finetuning result}
+  \vskip 0.15in
+  \begin{center}
+  \begin{small}
+  \begin{sc}
+  \begin{tabular}{lcccr}
+  \toprule
+  Domain & Task & BASE DIAYN & Other best & Ours \\
+  \midrule
+  Walker & Flip    &  \\
+   & Run    & 158$\pm$8 & 486$\pm$25 & 542\\
+   & Stand    &  \\
+   & Walk    &  \\
+  Quadruped & Jump    &  \\
+   & RUn    &  \\
+   & Stand    &  \\
+   & Walk   &  \\
+  Jaco & Reach bottom left    &  \\
+   & Reach bottom right   &  \\
+   & Reach top left    & \\
+   & Reach top right   &  \\
+  
+  
+  
+  \bottomrule
+  \end{tabular}
+  \end{sc}
+  \end{small}
+  \end{center}
+  \vskip -0.1in
+  \end{table}
+
 \begin{figure}[ht]
   \vskip 0.2in
   \begin{center}
@@ -86,74 +120,25 @@ This reveals that the skill allows it to learn some meaningful behavior.
 Maybe the skill distribution looks like a flat, meaningless vector to our eyes, but the slight difference is meaningful.
 
 \subsection{DIAYN as skill weight predictor}
-The second is to use the DIAYN module used in the pretrain phase as a skill weight predictor. Also, we pretrained this module in end to end manner using DDPG.
+The second is to use the DIAYN module used in the pretrain phase as a skill weight predictor.
+Also, we train DIAYN in end to end manner using DDPG.
 DIAYN module was a skill classifier in the pretraining phase, outputting which skill was in charge for the input state.
 The final output of DIAYN is logit, which could be easily trasferred to probability when feeded in softmax layer.
+We use this probability as a importance weight for skill. 
+During the pretraining process, diayn performed the task of predicting skill through the state and we hope 
+this pretrain task help diayn module to learn combine skills  to incoming state.
 
-We use this probability as a importance weight for skill.
-We hope the capability of connecting state to skill leads to 
- to learn something necessary to link state to skill.
+ But the performance was not good. This may be because the pretrain task does not perform a very good weight initializer role,
+ or it may be because it is not good to change the weight of skill according to the state.
+
 \subsubsection{Weight transfer from pretrained DIAYN}
 
-\subsubsection{Train from scratch}
-
-But the performance was not good. This may be because the pretrain task does not perform a very good weight initializer role, or it may be because it is not good to change the weight for the skill according to the state.
-
-During the pretraining process, diayn performed the task of predicting skill through the state and we hope this pretrain task help diayn module to predict what skill is useful to certain state
-
-\subsection{MultiHeadAttention to attain several skill weight}
-Third, we use MultiHeadAttention to determine the skill weight.
-The result was fine. However, there is not much gain compared to Simple Weight. In this case, using simple weights is parameter efficient.
-
-During the pretraining process, diayn performed the task of predicting skill through the state
-
-
-
-
-
-
-
-
-DIAYN is fixed as the pretrain method and finetuning is performed in various ways.
-To follow the comparison introduced in the CIC paper, 2 million steps are pretrained and then 100,000 steps finetuning is performed.
-Our method outperformed the other methods in 12 environments.
-It is noteworthy that the simplest state agnostic skill weight method among our proposed methods obtained the best performance.
-However, we also introduce the results of other 'skill as perspective' methods.
-\begin{table}[t]
-  \caption{Performance at finetuning}
-  \label{finetuning result}
-  \vskip 0.15in
-  \begin{center}
-  \begin{small}
-  \begin{sc}
-  \begin{tabular}{lcccr}
-  \toprule
-  Domain & Task & BASE DIAYN & Other best & Ours \\
-  \midrule
-  Walker & Flip    &  \\
-   & Run    & 158$\pm$8 & 486$\pm$25 & 542\\
-   & Stand    &  \\
-   & Walk    &  \\
-  Quadruped & Jump    &  \\
-   & RUn    &  \\
-   & Stand    &  \\
-   & Walk   &  \\
-  Jaco & Reach bottom left    &  \\
-   & Reach bottom right   &  \\
-   & Reach top left    & \\
-   & Reach top right   &  \\
-  
-  
-  
-  
-  \bottomrule
-  \end{tabular}
-  \end{sc}
-  \end{small}
-  \end{center}
-  \vskip -0.1in
-  \end{table}
-
+\cref*{diayn-as-skill-weight}
+In the case of simple weight, skill weight is determined regardless of the incoming state.
+However, using the DIAYN module as skill weight predictor creates an association between state and skill weights.
+With the transfered weight from pretrained phase, DIAYN module learns to output the skill weight in end to end manner.
+However, the learning results were not good.
+There was a part where the performance deteriorated significantly for a certain period.
 
 \begin{figure}[ht]
   \vskip 0.2in
@@ -169,24 +154,26 @@ However, we also introduce the results of other 'skill as perspective' methods.
   \vskip -0.2in
   \end{figure}
 
-\subsection{Attention}
-\begin{figure}[ht]
-  \vskip 0.2in
-  \begin{center}
-  \centerline{\includegraphics[width=\columnwidth]{Figures/attention_on_walker_run.png}}
-  \caption{This result was lost}
-  \label{attention-on-walker-run}
-  \end{center}
-  \vskip -0.2in
-  \end{figure}
+\subsubsection{Train from scratch}
+Although it recovered later, but even after recovery, it did not show imporoved performance than the baseline and didn't gain sample efficiency from weight transfer.
+We thought that DIAYN weight would be a good initializer as a skill weight predictor, the above experiment reveales we are wrong.
+Instead, we randomly init the weight with the intention of using it only as a module to determine the appropriate skill weight depending on the state.
+The results were rather better than transferred weight.
+This shows that the pretrain task was not very helpful in predicting how to fuse the skill together.
 
-\section*{Software and Data}
 
-If a paper is accepted, we strongly encourage the publication of software and data with the
-camera-ready version of the paper whenever appropriate. This can be
-done by including a URL in the camera-ready copy. However, \textbf{do not}
-include URLs that reveal your institution or identity in your
-submission for review. Instead, provide an anonymous URL or upload
-the material as ``Supplementary Material'' into the CMT reviewing
-system. Note that reviewers are not required to look at this material
-when writing their review.
+
+
+\subsection{MultiHeadAttention to attain several skill weight}
+Third, we use MultiHeadAttention to have multiple the skill weights.
+The result was fine.
+However, there is not much gain compared to Simple Weight.
+In this case, using simple weights is parameter efficient.
+
+\subsubsection{self attention}
+\subsubsection{use state as query attention}
+
+
+
+
+
