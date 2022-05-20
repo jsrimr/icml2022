@@ -34,6 +34,9 @@
 % if you use cleveref..
 \usepackage[capitalize,noabbrev]{cleveref}
 
+% custom
+\usepackage{tabularx} % in the preamble
+\usepackage{lipsum}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % THEOREMS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,8 +64,7 @@
 \begin{document}
 
 \twocolumn[
-\icmltitle{hello and Formatting Instructions for \\
-           International Conference on Machine Learning (ICML 2022)}
+\icmltitle{Sample-Efficient finetuning by Interpreting skill as perspective}
 
 % It is OKAY to include author information, even for blind
 % submissions: the style file will automatically remove it for you
@@ -131,42 +133,42 @@ Pretraining - Finetuning method shows amazing efficiency and performance. There 
 % \input{contents/3_background}
 \input{contents/4_body}
 \input{contents/5_experiments}
-% \input{contents/6_conclusion}
+\input{contents/6_conclusion}
 
 
 
-Camera-ready copies should have the title of the paper as running head
-on each page except the first one. The running title consists of a
-single line centered above a horizontal rule which is $1$~point thick.
-The running head should be centered, bold and in $9$~point type. The
-rule should be $10$~points above the main text. For those using the
-\textbf{\LaTeX} style file, the original title is automatically set as running
-head using the \texttt{fancyhdr} package which is included in the ICML
-2022 style file package. In case that the original title exceeds the
-size restrictions, a shorter form can be supplied by using
+% Camera-ready copies should have the title of the paper as running head
+% on each page except the first one. The running title consists of a
+% single line centered above a horizontal rule which is $1$~point thick.
+% The running head should be centered, bold and in $9$~point type. The
+% rule should be $10$~points above the main text. For those using the
+% \textbf{\LaTeX} style file, the original title is automatically set as running
+% head using the \texttt{fancyhdr} package which is included in the ICML
+% 2022 style file package. In case that the original title exceeds the
+% size restrictions, a shorter form can be supplied by using
 
-\verb|\icmltitlerunning{...}|
+% \verb|\icmltitlerunning{...}|
 
-just before $\mathtt{\backslash begin\{document\}}$.
-Authors using \textbf{Word} must edit the header of the document themselves.
+% just before $\mathtt{\backslash begin\{document\}}$.
+% Authors using \textbf{Word} must edit the header of the document themselves.
 
 
 
 
 
 % Acknowledgements should only appear in the accepted version.
-\section*{Acknowledgements}
+% \section*{Acknowledgements}
 
-\textbf{Do not} include acknowledgements in the initial version of
-the paper submitted for blind review.
+% \textbf{Do not} include acknowledgements in the initial version of
+% the paper submitted for blind review.
 
-If a paper is accepted, the final camera-ready version can (and
-probably should) include acknowledgements. In this case, please
-place such acknowledgements in an unnumbered section at the
-end of the paper. Typically, this will include thanks to reviewers
-who gave useful comments, to colleagues who contributed to the ideas,
-and to funding agencies and corporate sponsors that provided financial
-support.
+% If a paper is accepted, the final camera-ready version can (and
+% probably should) include acknowledgements. In this case, please
+% place such acknowledgements in an unnumbered section at the
+% end of the paper. Typically, this will include thanks to reviewers
+% who gave useful comments, to colleagues who contributed to the ideas,
+% and to funding agencies and corporate sponsors that provided financial
+% support.
 
 
 % In the unusual situation where you want a paper to appear in the
