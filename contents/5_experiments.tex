@@ -30,13 +30,6 @@ $a \sim g(\phi_i(s)), \text{where} \phi_i=f([s',z_i'])$
 We compare the results of using our method and not using our method during Finetune When the pretrain method is both DIAYN.
 The results were better than default DIAYN finetuning using DDPG update.
 
-We came to a question when we saw that skill weight was evenly distributed.
-If we take average of ${[s,z]}$ vectors, isn't it the same as just having state without skill?
-This is because the more evenly the importance is distributed, the closer the skill vector is to 0 vector in one-hot vector. Figure needed?
-This is because, when concating, the mean of state vector part will be same as the original value,
-but the skill vector part will be a near-uniform distributed vector of about $\frac{1}{skilldim}$.
-
-This makes it doubtful whether the skill_vector part has any meaning.
 We believe this result came about for two reasons.
 First, the default DIAYN finetune uses only one skill per episode.
 This has disadvantage of not being able to utilize other skills learned during pretraining.
@@ -70,11 +63,22 @@ This allows for faster and better performance, as shown in the \cref{walker-run-
     \end{center}
     \vskip -0.2in
     \end{figure}
-
-Looking at the final learned $w_{i}$, it can be seen that all perspectives are used near evenly.
+Looking at the final learned ${w_i}$, it can be seen that all perspectives are used near evenly.
 
 \subsubsection{Comparison with no skill agent}
 
+We came to a question when we saw that skill weight was evenly distributed.
+If we take average of ${[s,z]}$ vectors, isn't it the same as just having state without skill?
+This is because the more evenly the importance is distributed, the closer the skill vector is to 0 vector in one-hot vector. Figure needed?
+This is because, when concating, the mean of state vector part will be same as the original value,
+but the skill vector part will be a near-uniform distributed vector of about $\frac{1}{skilldim}$.
+This makes it doubtful whether the skill vector part has any meaning.
+
+If weighted skill vector has really no meaning, then the agent without skill should outperform our method.
+Therefore, we compare our method with DDPG + DDPG agent. The result is that our method is better.
+
+This reveals that the skill allows it to learn some meaningful behavior.
+Maybe the skill distribution looks like a flat, meaningless vector to our eyes, but the slight difference is meaningful.
 If weighted skill vector has really no meaning, then the agent without skill should outperform our method.
 Therefore, we compare our method with DDPG + DDPG agent. The result is that our method is better.
 
