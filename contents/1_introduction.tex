@@ -1,117 +1,37 @@
 \section{introduction}
 \label{submission}
 
-Submission to ICML 2022 will be entirely electronic, via a web site
-(not email). Information about the submission process and \LaTeX\ templates
-are available on the conference web site at:
-\begin{center}
-\textbf{\texttt{http://icml.cc/}}
-\end{center}
+Unsupervised learning for deep reinforcement learning (DRL) is challenging
+in the sense that agent should interact with the world and collect data to get a useful information
+without explicit reward. In the pretraining step, agent gathers information from the environment
+and learns representations of visited states, dynamics, and behaviors. When the downstream tasks are
+given, the agent has to quickly adapt to them leveraging those representations. Recent works has shown that
+skill discovery is a promising way to learn diverse behaviors which potentially help the agent achieve a goal
+ \cite{salge2014empowerment, gregor2016variational, eysenbach2018diversity}.
 
-The guidelines below will be enforced for initial submissions and
-camera-ready copies. Here is a brief summary:
-\begin{itemize}
-\item Submissions must be in PDF\@. 
-\item \textbf{New to this year}: If your paper has appendices, submit the appendix together with the main body and the references \textbf{as a single file}. Reviewers will not look for appendices as a separate PDF file. So if you submit such an extra file, reviewers will very likely miss it.
-\item Page limit: The main body of the paper has to be fitted to 8 pages, excluding references and appendices; the space for the latter two is not limited. For the final version of the paper, authors can add one extra page to the main body.
-\item \textbf{Do not include author information or acknowledgements} in your
-    initial submission.
-\item Your paper should be in \textbf{10 point Times font}.
-\item Make sure your PDF file only uses Type-1 fonts.
-\item Place figure captions \emph{under} the figure (and omit titles from inside
-    the graphic file itself). Place table captions \emph{over} the table.
-\item References must include page numbers whenever possible and be as complete
-    as possible. Place multiple citations in chronological order.
-\item Do not alter the style template; in particular, do not compress the paper
-    format by reducing the vertical spaces.
-\item Keep your abstract brief and self-contained, one paragraph and roughly
-    4--6 sentences. Gross violations will require correction at the
-    camera-ready phase. The title should have content words capitalized.
-\end{itemize}
+\begin{figure}[ht]
+    \vskip 0.2in
+    \begin{center}
+    % \centerline{\includegraphics[width=\columnwidth]{Figures/perspective_different_pic.png}}
+    \centerline{\includegraphics[width=0.5\columnwidth]{Figures/perspective_different_pic.png}}
+    \caption{The picture looks different depending on the point of view}
+    \label{perspective}
+    \end{center}
+    \vskip -0.2in
+    \end{figure}
+  
 
-\subsection{Submitting Papers}
+Although the agent could learn diverse skills, it is not obvious at a glance
+how the agent manages them to solve a downstream task since the agent has to efficiently and effectively handle
+multiple policies while the agent has just one policy to control in a typical reinforcement learning framework. Following the recent work \cite{laskin2021urlb} which evaluated a variety of unsupervised RL algorithms in locomotion environment, skill-based algorithms shows a poor performance compared to other algorithms.
+Meanwhile, since the learned skills do not cover all the possible behaviors of agent practically,
+agent is required to choose as appropriate skill for each moment or have an ability to combine several skills together.
 
-\textbf{Paper Deadline:} The deadline for paper submission that is
-advertised on the conference website is strict. If your full,
-anonymized, submission does not reach us on time, it will not be
-considered for publication. 
+One might simply use one of the skills best fitted for each task or sequentially 
+perform a series of skills. However, these do not fully extract the potential which the learned skill has.
+Instead, we explore the fine tuning method by focusing on how each skill views each state
+and utilize them with weight.
 
-\textbf{Anonymous Submission:} ICML uses double-blind review: no identifying
-author information may appear on the title page or in the paper
-itself. \cref{author info} gives further details.
-
-\textbf{Simultaneous Submission:} ICML will not accept any paper which,
-at the time of submission, is under review for another conference or
-has already been published. This policy also applies to papers that
-overlap substantially in technical content with conference papers
-under review or previously published. ICML submissions must not be
-submitted to other conferences and journals during ICML's review
-period.
-%Authors may submit to ICML substantially different versions of journal papers
-%that are currently under review by the journal, but not yet accepted
-%at the time of submission.
-Informal publications, such as technical
-reports or papers in workshop proceedings which do not appear in
-print, do not fall under these restrictions.
-
-\medskip
-
-Authors must provide their manuscripts in \textbf{PDF} format.
-Furthermore, please make sure that files contain only embedded Type-1 fonts
-(e.g.,~using the program \texttt{pdffonts} in linux or using
-File/DocumentProperties/Fonts in Acrobat). Other fonts (like Type-3)
-might come from graphics files imported into the document.
-
-Authors using \textbf{Word} must convert their document to PDF\@. Most
-of the latest versions of Word have the facility to do this
-automatically. Submissions will not be accepted in Word format or any
-format other than PDF\@. Really. We're not joking. Don't send Word.
-
-Those who use \textbf{\LaTeX} should avoid including Type-3 fonts.
-Those using \texttt{latex} and \texttt{dvips} may need the following
-two commands:
-
-{\footnotesize
-\begin{verbatim}
-dvips -Ppdf -tletter -G0 -o paper.ps paper.dvi
-ps2pdf paper.ps
-\end{verbatim}}
-It is a zero following the ``-G'', which tells dvips to use
-the config.pdf file. Newer \TeX\ distributions don't always need this
-option.
-
-Using \texttt{pdflatex} rather than \texttt{latex}, often gives better
-results. This program avoids the Type-3 font problem, and supports more
-advanced features in the \texttt{microtype} package.
-
-\textbf{Graphics files} should be a reasonable size, and included from
-an appropriate format. Use vector formats (.eps/.pdf) for plots,
-lossless bitmap formats (.png) for raster graphics with sharp lines, and
-jpeg for photo-like images.
-
-The style file uses the \texttt{hyperref} package to make clickable
-links in documents. If this causes problems for you, add
-\texttt{nohyperref} as one of the options to the \texttt{icml2022}
-usepackage statement.
-
-
-\subsection{Submitting Final Camera-Ready Copy}
-
-The final versions of papers accepted for publication should follow the
-same format and naming convention as initial submissions, except that
-author information (names and affiliations) should be given. See
-\cref{final author} for formatting instructions.
-
-The footnote, ``Preliminary work. Under review by the International
-Conference on Machine Learning (ICML). Do not distribute.'' must be
-modified to ``\textit{Proceedings of the
-$\mathit{39}^{th}$ International Conference on Machine Learning},
-Baltimore, Maryland, USA, PMLR 162, 2022.
-Copyright 2022 by the author(s).''
-
-For those using the \textbf{\LaTeX} style file, this change (and others) is
-handled automatically by simply changing
-$\mathtt{\backslash usepackage\{icml2022\}}$ to
-$$\mathtt{\backslash usepackage[accepted]\{icml2022\}}$$
-Authors using \textbf{Word} must edit the
-footnote on the first page of the document themselves.
+Our main contribution is to emphasize the importance of fine tuning in skill discovery
+by showing the finetuning method can affect the final score a lot for each task.
+We also propose a simple but powerful finetune method utilizing every learned skill.
