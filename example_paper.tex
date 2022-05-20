@@ -121,14 +121,13 @@
 \printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
 
 \begin{abstract}
-This document provides a basic paper template and submission guidelines.
-Abstracts must be a single paragraph, ideally between 4--6 sentences long.
-Gross violations will trigger corrections at the camera-ready phase.
+Pretraining - Finetuning method shows amazing efficiency and performance. There have been several attempts to utilize this surprising effect in RL. Among such attempts, there is skill. During pretraining, the agent learns some useful and distinct policies without reward, and use this policy at finetuning to get good performance faster than from training from scratch. However, it is difficult to find attempts to do use skill optimally at finetuning. In this paper, we propose a simple method which is sample efficient and good performance by using all the skills by DIAYN. It is a method to understand skills as a perspective of how agent interprets the input state, and give weight to this perspective so that the policy automatically combines the perspectives to derive the optimal policy. By adding about 10 parameters, we were able to obtain higher reward in sample efficient manner than any other methods using pretrained DIAYN weight.
+
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \input{contents/1_introduction}
-\input{contents/2_related_work}
+% \input{contents/2_related_work}
 % \input{contents/3_background}
 \input{contents/4_body}
 \input{contents/5_experiments}
