@@ -1,4 +1,4 @@
-\section{Experiments on unsupervised RL benchmark} 
+\section{Experiments on unsupervised RL benchmark}
 
 Through the experiment, we show sample efficient training is possible only by adding trivial number of parameters(=skill-dim).
 We experimented our methods on URLB ($https://github.com/rll-research/url_benchmark$) where unsupervised RL methods could be compared fairly and easily.
@@ -34,7 +34,7 @@ We believe this result came about for two reasons.
 First, the default DIAYN finetune uses only one skill per episode.
 This has disadvantage of not being able to utilize other skills learned during pretraining.
 Secondly, the sampled skill is not optimal with high probability.
-Since, there's no way default DIAYN finetuning know which skill is good for the downstream task,it samples the skill uniformly.
+Since there's no way default DIAYN finetuning know which skill is good for the downstream task,it samples the skill uniformly.
 And this uniform sampling of course couldn't be optimal.
 This may be useful if interpreted as a method of obtaining a general agent in multi-task learning,
 but it is inappropriate as an approach that aim to achieve maximum performance in a specific goal-oriented downstream task.
@@ -42,39 +42,51 @@ On the other hand, our method utilizes all skills and learns how to use various 
 In \cref*{final_skill_weight}, we can check the agent use skills near evenly.
 This allows for faster and better performance, as shown in the \cref{walker-run-simple-weight}.
 
-\begin{table}[t]
-  \caption{Performance at finetuning}
-  \label{finetuning result}
-  \vskip 0.15in
-  \begin{center}
-  \begin{small}
-  \begin{sc}
-  \begin{tabular}{lcccr}
-  \toprule
-  Domain & Task & BASE DIAYN & Other best & Ours \\
-  \midrule
-  Walker & Flip    &  \\
-   & Run    & 158$\pm$8 & 486$\pm$25 & 542\\
-   & Stand    &  \\
-   & Walk    &  \\
-  Quadruped & Jump    &  \\
-   & RUn    &  \\
-   & Stand    &  \\
-   & Walk   &  \\
-  Jaco & Reach bottom left    &  \\
-   & Reach bottom right   &  \\
-   & Reach top left    & \\
-   & Reach top right   &  \\
-  
-  
-  
-  \bottomrule
-  \end{tabular}
-  \end{sc}
-  \end{small}
-  \end{center}
-  \vskip -0.1in
-  \end{table}
+
+  % \begin{table}[t]
+  %   \caption{Performance at finetuning}
+  %   \label{finetuning result}
+  %   \vskip 0.15in
+  %   \begin{center}
+  %   \begin{small}
+  %   \begin{sc}
+  %   \begin{tabular*}{\textwidth}{lcccr}
+  %   % \begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}} ccccc}
+  %   \toprule
+  %   Domain & Task & BASE DIAYN & Other best & Ours \\
+  %   \midrule
+  %   Walker & Flip    &  \\
+  %    & Run    & 158$\pm$8 & 486$\pm$25 & 542\\
+  %    & Stand    &  \\
+  %    & Walk    &  \\
+  %   Quadruped & Jump    &  \\
+  %    & RUn    &  \\
+  %    & Stand    &  \\
+  %    & Walk   &  \\
+  %   Jaco & Reach bottom left    &  \\
+  %    & Reach bottom right   &  \\
+  %    & Reach top left    & \\
+  %    & Reach top right   &  \\
+  %   \bottomrule
+  %   \end{tabular*}
+  %   \end{sc}
+  %   \end{small}
+  %   \end{center}
+  %   \vskip -0.1in
+  %   \end{table}
+
+  % \documentclass{article}
+
+
+
+
+\begin{tabu} to \textwidth {XXXX}
+   \toprule
+   xx & 1 & 2 & 3 \\
+   \bottomrule
+\end{tabu}
+
+
 
 \begin{figure}[ht]
   \vskip 0.2in
@@ -88,15 +100,15 @@ This allows for faster and better performance, as shown in the \cref{walker-run-
   \end{figure}
 
 
-  \begin{figure}[ht]
-    \vskip 0.2in
-    \begin{center}
-    \centerline{\includegraphics[width=\columnwidth]{Figures/skill_weight.png}}
-    \caption{}
-    \label{final_skill_weight}
-    \end{center}
-    \vskip -0.2in
-    \end{figure}
+  % \begin{figure}[ht]
+  %   \vskip 0.2in
+  %   \begin{center}
+  %   \centerline{\includegraphics[width=\columnwidth]{Figures/skill_weight.png}}
+  %   \caption{}
+  %   \label{final_skill_weight}
+  %   \end{center}
+  %   \vskip -0.2in
+  %   \end{figure}
 Looking at the final learned ${w_i}$, it can be seen that all perspectives are used near evenly.
 
 \subsubsection{Comparison with no skill agent}
