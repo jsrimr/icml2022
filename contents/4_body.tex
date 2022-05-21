@@ -1,24 +1,58 @@
 \section{Proposed Method}
-The main idea of our approach is to combine the learned skills to utilize for downstream tasks. We follow DIAYN \cite{eysenbach2018diversity} framework since it is used as a general skill discovery baseline, but our work is not limited to..
+The main idea of our approach is to combine the learned skills to utilize for downstream tasks. 
+We gain skills in the pretrain phase following DIAYN \cite{eysenbach2018diversity} framework which is used as a general skill discovery baseline.
+In DIAYN, they only used one best performing skill at the finetuning phase.
+However, it is often expensive to know which skill is best-performing and loses the possibility of gaining something from another independent skills. 
+As a result, we propose several methods to combine skills $\pi(a|s,\psi(z))$.
 
-\subsection{Skill-agnostic Policy}
+We consider $[s,\psi(z)]$ to be a state representation from the view of skill $z$.
+In other words, as many representations as the number of skills are created for one state.
+We propose sample efficient but robust skill combining method.
+% In this formulation, state representations are \emph{mixed} over the skills by the controller $p(z|s)$.
+% As above, we may replace $p(z|s)$ to $p(z)$ for simplifying.
+% In this case, we only need an additional weights on the simplex $w \in \Delta^k$ for $\mathbb{E}_{z \sim p(z)}[s,z] = f_{\psi}(\sum_i w_i[s,z_i])$. 
+
+\subsection{State-agnostic perspective fusion}
+We note that the skill $z$ is a $k$-dimensional discrete random variable sampled from the distribution $p(z)$.
+This is same as to making a one-hot vector by filling in some positions with 0 vectors as many as $k$ predefined.
+Then we hypothesize we could learn to use all skills if we fill all the places with 1's.
+This is because skill implemented as a one-hot vector is just a policy that determines which of the neural net weights to activate.
+Therefore, if all positions are filled with 1, all weights can be activated and more diverse representations can be obtained.
+This is interpreting the same state from different perspectives through skill.
+Vanilla DIAYN proposed to attain skill vector by sampling; $z \sim p(z|s)$
+The example of $z=[1, 0, 0]$. Here we propose two ways to get these different persepctives. $\psi(z)$
+The final policy will be $\pi(a|s,\psi(z))$. For $\psi$, we propose two ways.
+First, we propose same-weight policy $\psi(z)=[\frac{1}{k}, \frac{1}{k}, \frac{1}{k}]$.
+
+Second is simple parametric weight policy  $\psi(z)=[w_1, w_2, w_3]$.
+The input state will be transformed into using these parameters. 
+% $[s',z_i'] = \sum_{i}^{d}w_i [s,z_i]/d$
+Then, the transformed state will be fed into policy network to generate an action.
+% $a \sim g(\phi_i(s)), \text{where} \phi_i=f([s',z_i'])$
+$a \sim \pi(s, [w_1,w_2,w_3])$
 
 
-We assume that the skill discovery step is done so that we now have a pretrained skill-conditioned policy $\pi(a|s,z)$ which outputs action given the state and skill. Also, the skill $z$ is a $k$-dimensional discrete random variable sampled from the distribution $p(z)$. Then we can write a skill-agnostic policy as
+
+
+
+\subsection{State-aware perspective fusion}
+In the above method, skill weight was determined without considering incoming state.
+However, if the skill weight is changed adaptively according to the state, better performance may be achieved.
+DIAYN module was a skill classifier in the pretraining phase, outputting which skill was in charge for the input state.
+The final output of DIAYN is logit, which could be easily trasferred to probability when feeded in softmax layer.
+We utilize this probability as a importance weight for skill. During the pretraining process, 
+diayn $q_{\phi}(z|s)$ predicted skill through the state and we think this pretrain task help diayn module to learn combine skills  to incoming state.
+Therefore, we propose to use DIAYN learned during pretraining as skill weight predictor.
+$\pi(a|s,z)$ now transforms to equation \ref{eqn:daiyn as weight predictor}.
+
+% We decompose a skill-conditioned policy to $\pi(a|s,z) = f_{\psi}(g_{\phi}(s, z))$ where $f_{\psi}$ is a linear classifier and $g_{\phi}$ is the rest.
+% Then, we write a skill-agnostic policy as
 \begin{equation}
-    \pi(a|s) = \mathbb{E}_{z \sim p(z|s)}[\pi(a|s,z)].
-\end{equation}
-One can fine-tune either a \emph{controller} $p(z|s)$ with or without further fine-tuning a skill-conditioned policy $\pi(a|s,z)$ in hierarchical RL framework \cite{sharma2019dynamics}. If we assume that skill distribution is independent to the state $p(z) \approx p(z|s)$, it becomes a simple fine-tuning formulation either fixing one skill to adapt a task or take action proportional to the dominant skill. The limitation of those methods is to combine the skills only in an action level rather than underlying representation level.
-
-\subsection{Mixed Representations}
-We decompose a skill-conditioned policy to $\pi(a|s,z) = f_{\psi}(g_{\phi}(s, z))$ where $f_{\psi}$ is a linear classifier and $g_{\phi}$ is the rest. Then, we write a skill-agnostic policy as
-\begin{equation}
-    \tilde{\pi}(a|s) = f_{\psi}(\mathbb{E}_{z \sim p(z|s)}[g_{\phi}(s,z)])
+\label{eqn:daiyn as weight predictor}
+    % \tilde{\pi}(a|s) = f_{\psi}(\mathbb{E}_{z \sim p(z|s)}[g_{\phi}(s,z)])
+    \pi(a|s,q_{\phi}(z|s))
 \end{equation}
 
-We consider $g_{\phi}(s, z)$ to be a state representation from the view of skill $z$. In other words, as many representations as the number of skills are created for one state. In this formulation, state representations are \emph{mixed} over the skills by the controller $p(z|s)$. As above, we may replace $p(z|s)$ to $p(z)$ for simplifying. In this case, we only need an additional weights on the simplex $w \in \Delta^k$ for $f_{\psi}(\mathbb{E}_{z \sim p(z)}[g_{\phi}(s,z)]) = f_{\psi}(\sum_i w_i g_{\phi}(s,z_i))$. 
-
-TODO: Figure for method
 
 \subsection{Analyzation}
 TODO: analyze a trajectory and the representations of each state

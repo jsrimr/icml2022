@@ -15,16 +15,13 @@ Our method outperformed the other pretrain-finetune methods in 12 environments a
 It is noteworthy that the simplest state agnostic skill weight method among our proposed methods obtained the best performance. 
 However, we also introduce the results of other skill as perspective methods as mention in 3.Method.
 
-\subsection{Simple trainable skill weight}
+\subsection{State-agnostic perspective fusion}
 The first is to introduce several parameters which counts to skill dim.
 These parameters are used to weight each skill using additional parameters as large as the skill dimension.
 The parameters are trainined in end-to-end manner using DDPG which is a default finetuning method in URLB.
 These parameters serve to fuse the state viewed from various perspectives to help the agent obtain the optimal reward in a faster way.
 
-The input state will be transformed into using these parameters. 
-$[s',z_i'] = \sum_{i}^{d}w_i [s,z_i]/d$
-Then, the transformed state will be fed into policy network to generate an action.
-$a \sim g(\phi_i(s)), \text{where} \phi_i=f([s',z_i'])$
+
 
 \subsubsection{Comparison with vanilla DIAYN}
 We compare the results of using our method and not using our method during Finetune When the pretrain method is both DIAYN.
@@ -79,27 +76,6 @@ This allows for faster and better performance, as shown in the \cref{walker-run-
 
 
 
-
-\begin{tabu} to \textwidth {XXXX}
-   \toprule
-   xx & 1 & 2 & 3 \\
-   \bottomrule
-\end{tabu}
-
-
-
-\begin{figure}[ht]
-  \vskip 0.2in
-  \begin{center}
-  \centerline{\includegraphics[width=\columnwidth]{Figures/walker_run_simple_weight.png}}
-  \caption{Training curves of Walker-Run task from our simple weight agent and vanila DIAYN agent.
-  Adding several parameters to help fuse skills helped the agent to learn faster.}
-  \label{walker-run-simple-weight}
-  \end{center}
-  \vskip -0.2in
-  \end{figure}
-
-
   % \begin{figure}[ht]
   %   \vskip 0.2in
   %   \begin{center}
@@ -134,11 +110,6 @@ Maybe the skill distribution looks like a flat, meaningless vector to our eyes, 
 \subsection{DIAYN as skill weight predictor}
 The second is to use the DIAYN module used in the pretrain phase as a skill weight predictor.
 Also, we train DIAYN in end to end manner using DDPG.
-DIAYN module was a skill classifier in the pretraining phase, outputting which skill was in charge for the input state.
-The final output of DIAYN is logit, which could be easily trasferred to probability when feeded in softmax layer.
-We use this probability as a importance weight for skill. 
-During the pretraining process, diayn performed the task of predicting skill through the state and we hope 
-this pretrain task help diayn module to learn combine skills  to incoming state.
 
  But the performance was not good. This may be because the pretrain task does not perform a very good weight initializer role,
  or it may be because it is not good to change the weight of skill according to the state.
