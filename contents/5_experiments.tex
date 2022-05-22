@@ -40,7 +40,7 @@ This reveals that randomly changing skill at finetuning phase harms a performanc
 
 
 \subsubsection{Same skill weight and Simple learnable skill weight}
-While DIAYN and fixed_one_weight method uses only one skill, our proposed method utilizes all skills.
+While DIAYN and fixed one weight method uses only one skill, our proposed method utilizes all skills.
 Same skill weight assigns same importance to all skills and simple weight scheme learns to control skill weights to achieve better performance.
 Notable thing is that parameter-less same skill weight scheme outperformed all other methods.
 This is because just to open a way to use all the skills was enough to achieve good performance
@@ -86,7 +86,7 @@ In other words,
   \begin{figure}[ht]
     \vskip 0.2in
     \begin{center}
-    \centerline{\includegraphics[width=\columnwidth]{Figures/Comparison_state_agnostic_skill_weight_methods.png}}
+    \centerline{\includegraphics[width=\columnwidth]{Figures/multiple_seed_state_agnostic_methods.png}}
     \caption{Finetuning results of state agnostic skill weight methods. Same skill importance method achived the best result.}
     \label{state agnostic results}
     \end{center}
@@ -136,7 +136,7 @@ There was a part where the performance deteriorated significantly for a certain 
 \begin{figure}[ht]
   \vskip 0.2in
   \begin{center}
-  \centerline{\includegraphics[width=\columnwidth]{Figures/diayn_as_skill_on_walker_run.png}}
+  \centerline{\includegraphics[width=\columnwidth]{Figures/fair_weight_and_diayn_as_weight_predictor.png}}
   \caption{Historical locations and number of accepted papers for International
   Machine Learning Conferences (ICML 1993 -- ICML 2008) and International
   Workshops on Machine Learning (ML 1988 -- ML 1992). At the time this figure was
