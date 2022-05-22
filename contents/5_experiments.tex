@@ -4,91 +4,101 @@ Through the experiment, we show sample efficient training is possible only by ad
 We experimented our methods on URLB ($https://github.com/rll-research/url_benchmark$) where unsupervised RL methods could be compared fairly and easily.
 
 There are two phases in URLB.
-First phas is a reward-free pretrain phase and the other is finetuning phase with explicit rewards.
+First phase is a reward-free pretrain phase and the other is finetuning phase with explicit rewards.
 In a reward-free environment, methods such as DIAYN tries to train the agent to learn something meaningful using intrinsic reward.
 Through this pretrain phase, the agent learns some behavior and we call this behavior as skill.
-The method we propose in this paper is a methodology on how to get a higher reward faster when finetuning the learned behavior.
+Then we use these skills the get a higher reward faster in finetuning. Our method suggests several methods to combines these skills together and shows great performance.
 
 DIAYN is fixed as the pretrain method and finetuning is performed in various ways.
 To follow the comparison introduced in the CIC paper, 2 million steps are pretrained and then 100,000 steps finetuning is performed.
 Our method outperformed the other pretrain-finetune methods in 12 environments and the result is summarized on table \cref{finetuning result}.
-It is noteworthy that the simplest state agnostic skill weight method among our proposed methods obtained the best performance. 
-However, we also introduce the results of other skill as perspective methods as mention in 3.Method.
+% It is noteworthy that the simplest state agnostic skill weight method among our proposed methods obtained the best performance. 
+State agnostic methods showed faster learning, but state aware method achieved better result at the end.
+
+
 
 \subsection{State-agnostic perspective fusion}
-The first is to introduce several parameters which counts to skill dim.
-These parameters are used to weight each skill using additional parameters as large as the skill dimension.
+We introduced two state-agnostic perspective combining methods.
+First is to assign same weights to each perspective, and the second is to introduce several parameters which counts to skill dim.
+While the first method doesn't require any additional parameters, the second methods use several parameters are used to weight each skill using additional parameters as large as the skill dimension.
 The parameters are trainined in end-to-end manner using DDPG which is a default finetuning method in URLB.
 These parameters serve to fuse the state viewed from various perspectives to help the agent obtain the optimal reward in a faster way.
 
-
-
-\subsubsection{Comparison with vanilla DIAYN}
-We compare the results of using our method and not using our method during Finetune When the pretrain method is both DIAYN.
-The results were better than default DIAYN finetuning using DDPG update.
+We compare the results of using our method and not using our method during finetune when the pretrain method is both DIAYN.
+The default DIAYN method is blue line on \cref*{state agnostic results}, and all other methods exceed this baseline.
 
 We believe this result came about for two reasons.
 First, the default DIAYN finetune uses only one skill per episode.
 This has disadvantage of not being able to utilize other skills learned during pretraining.
 Secondly, the sampled skill is not optimal with high probability.
 Since there's no way default DIAYN finetuning know which skill is good for the downstream task,it samples the skill uniformly.
-And this uniform sampling of course couldn't be optimal.
+And this uniform sampling of course highly not optimal.
 This may be useful if interpreted as a method of obtaining a general agent in multi-task learning,
 but it is inappropriate as an approach that aim to achieve maximum performance in a specific goal-oriented downstream task.
-On the other hand, our method utilizes all skills and learns how to use various skills harmoniously to achieve better performance.
-In \cref*{final_skill_weight}, we can check the agent use skills near evenly.
-This allows for faster and better performance, as shown in the \cref{walker-run-simple-weight}.
+In fact, using only one fixed skill which is chosen at random far exceeds default DIAYN implemented in URLB.(Red line)
+This reveals that randomly changing skill at finetuning phase harms a performance a lot.
 
 
-  % \begin{table}[t]
-  %   \caption{Performance at finetuning}
-  %   \label{finetuning result}
-  %   \vskip 0.15in
-  %   \begin{center}
-  %   \begin{small}
-  %   \begin{sc}
-  %   \begin{tabular*}{\textwidth}{lcccr}
-  %   % \begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}} ccccc}
-  %   \toprule
-  %   Domain & Task & BASE DIAYN & Other best & Ours \\
-  %   \midrule
-  %   Walker & Flip    &  \\
-  %    & Run    & 158$\pm$8 & 486$\pm$25 & 542\\
-  %    & Stand    &  \\
-  %    & Walk    &  \\
-  %   Quadruped & Jump    &  \\
-  %    & RUn    &  \\
-  %    & Stand    &  \\
-  %    & Walk   &  \\
-  %   Jaco & Reach bottom left    &  \\
-  %    & Reach bottom right   &  \\
-  %    & Reach top left    & \\
-  %    & Reach top right   &  \\
-  %   \bottomrule
-  %   \end{tabular*}
-  %   \end{sc}
-  %   \end{small}
-  %   \end{center}
-  %   \vskip -0.1in
-  %   \end{table}
-
-  % \documentclass{article}
+\subsubsection{Same skill weight and Simple learnable skill weight}
+While DIAYN and fixed_one_weight method uses only one skill, our proposed method utilizes all skills.
+Same skill weight assigns same importance to all skills and simple weight scheme learns to control skill weights to achieve better performance.
+Notable thing is that parameter-less same skill weight scheme outperformed all other methods.
+This is because just to open a way to use all the skills was enough to achieve good performance
+and it seems that changing skill weight is also possible by adjusting the weight of the latter layers of neural net.
+In other words, 
+% In \cref*{final_skill_weight}, we can check the agent use skills near evenly.
+% This allows for faster and better performance, as shown in the \cref{finetuning result}.
 
 
+% \begin{tabular*}{\textwidth}{lcccr}
+%   \begin{table}[t]
+%     \caption{Performance at finetuning}
+%     \label{finetuning result}
+%     \vskip 0.15in
+%     \begin{center}
+%     \begin{small}
+%     \begin{sc}
+%     \begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}} ccccc}
+%     \toprule
+%     Domain & Task & BASE DIAYN & Other best & Ours \\
+%     \midrule
+%     Walker & Flip    &  \\
+%      & Run    & 158$\pm$8 & 486$\pm$25 & 542\\
+%      & Stand    &  \\
+%      & Walk    &  \\
+%     Quadruped & Jump    &  \\
+%      & Run    &  \\
+%      & Stand    &  \\
+%      & Walk   &  \\
+%     Jaco & Reach bottom left    &  \\
+%      & Reach bottom right   &  \\
+%      & Reach top left    & \\
+%      & Reach top right   &  \\
+%     \bottomrule
+%   \end{sc}
+% \end{small}
+% \end{center}
+% \vskip -0.1in
+% \end{table}
+% \end{tabular*}
 
-  % \begin{figure}[ht]
-  %   \vskip 0.2in
-  %   \begin{center}
-  %   \centerline{\includegraphics[width=\columnwidth]{Figures/skill_weight.png}}
-  %   \caption{}
-  %   \label{final_skill_weight}
-  %   \end{center}
-  %   \vskip -0.2in
-  %   \end{figure}
+
+  \begin{figure}[ht]
+    \vskip 0.2in
+    \begin{center}
+    \centerline{\includegraphics[width=\columnwidth]{Figures/Comparison_state_agnostic_skill_weight_methods.png}}
+    \caption{Finetuning results of state agnostic skill weight methods. Same skill importance method achived the best result.}
+    \label{state agnostic results}
+    \end{center}
+    \vskip -0.2in
+    \end{figure}
 Looking at the final learned ${w_i}$, it can be seen that all perspectives are used near evenly.
 
-\subsubsection{Comparison with no skill agent}
 
+\subsubsection{Fixed one skill}
+% \subsubsection{Sampling skill(DIAYN)}
+
+\subsubsection{Zero skill weight}
 We came to a question when we saw that skill weight was evenly distributed.
 If we take average of ${[s,z]}$ vectors, isn't it the same as just having state without skill?
 This is because the more evenly the importance is distributed, the closer the skill vector is to 0 vector in one-hot vector. Figure needed?
