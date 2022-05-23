@@ -126,9 +126,14 @@
 \printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
 
 \begin{abstract}
-Pretraining - Finetuning method shows amazing efficiency and performance. There have been several attempts to utilize this surprising effect in RL. Among such attempts, there is skill. During pretraining, the agent learns some useful and distinct policies without reward, and use this policy at finetuning to get good performance faster than from training from scratch. However, there's few attempts to combine skills optimally at finetuning. In this paper, we propose a nice-performing simple sample-efficient skill combining method. It is a method to understand skills as a perspective of how agent interprets the input state, and give weight to this perspective so that the policy automatically combines the perspectives to derive the optimal policy. Without adding any other parameters, we were able to obtain higher reward than vanilla DIAYN finetuning method.
-We also present less sample efficient but higher performing skill combining method which uses DIAYN discriminator as skill weight predictor.
-Code is available at $https://github.com/some-private$
+Skill is an attempt to integrate pretrain-finetuning method in reinforcement learning.
+During pretraining, the agent learns some useful and distinct policies without reward, and use this policy at finetuning to get fast and better performance than training from scratch.
+However, there's few attempts to combine skills optimally at finetuning.
+In this paper, we propose two skill combining methods which are sample-efficient and shows good performance.
+First method is a state-agnostic super sample efficient method achieving higher reward than baseline methods adding only tens of parameters.
+Second method is a state-aware skill combining method which is a slower-learner than first method but shows better performance at the end.
+We improve second method's sample efficiency by using pretrained DIAYN module as a skill combining module.
+Code is available at $https://github.com/some-private$.
 
 \end{abstract}
 
