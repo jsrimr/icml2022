@@ -4,43 +4,9 @@
 % 2. Compare sample efficiency
 %   - Finetune 100k steps and observe the final performances of default/fair_weight
 
-%% TABLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table*}[t]
- \caption{Result of fine-tuning for $1 \times 10^5$ frames after pre-training for $2 \times 10^6$ frames.}
- \label{table:result_urlb}
- \vskip 0.15in
- \begin{center}
- \begin{small}
- \begin{sc}
- \begin{tabular}{lccccc}
- % \begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}} ccccc}
- \toprule
- Domain & Task & Expert & Other best & Original DIAYN & Ours (same weight) \\
- \midrule
- Walker & Flip  & 799  & 515$\pm$17 &  381$\pm$17   & \textbf{658$\pm$51}\\
-        & Run   & 796  & 439$\pm$34 &  242$\pm$11   & \textbf{537$\pm$22}\\
-        & Stand & 984  & 923$\pm$9  &  860$\pm$26   & \textbf{936$\pm$11} \\
-        & Walk  & 971  & 828$\pm$29 &  661$\pm$26   & \textbf{917$\pm$23}\\
- Quadruped & Jump  & 888  & 590$\pm$33  &  578$\pm$46  & \textbf{645$\pm$20} \\
-        & Run   & 888     & 465$\pm$37  &  415$\pm$28  & \textbf{558$\pm$43} \\
-        & Stand & 920     & \textbf{840$\pm$33}  &  706$\pm$48  & 719$\pm$158 \\
-        & Walk  & 866     & 721$\pm$56  &  406$\pm$64  & \textbf{845$\pm$74}  \\
- Jaco & Reach bottom left   & 193 & 134$\pm$8 & 17$\pm$5   & \textbf{136$\pm$36}\\
-        & Reach bottom right& 203 & \textbf{122$\pm$4} & 31$\pm$4   & 119$\pm$39\\
-        & Reach top left    & 191 & 124$\pm$20 & 11$\pm$3   & \textbf{127$\pm$9}\\
-        & Reach top right   & 223 & \textbf{140$\pm$7}  & 19$\pm$4   & 138$\pm$42\\
- \bottomrule
- \end{tabular}
- \end{sc}
- \end{small}
- \end{center}
- \vskip -0.1in
- \end{table*}
-%% TABLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % Introduce an environment
 % 환경에 대한 전반적인 소개
-We experimented methods on URLB \cite{laskin2021urlb}, which contains three continuous control environments and twelve downstream tasks.
+We experimented proposed methods on URLB \cite{laskin2021urlb}, which contains three continuous control environments and twelve downstream tasks.
 The environments include 6-DOF \emph{Walker}, 12-DOF \emph{Quadruped}, and 9-DOF \emph{Jaco arm}. 
 
 \begin{figure}[ht]
@@ -72,7 +38,8 @@ When we evaluate our methods, we fix the pre-trained agent as DIAYN and fine-tun
     \end{center}
     \vskip -0.2in
 \end{figure}
-Looking at the final learned ${w_i}$, it can be seen that all perspectives are used near evenly.
+
+% Looking at the final learned ${w_i}$, it can be seen that all perspectives are used near evenly.
 
 
 \subsection{Evaluation for Performance}
@@ -82,6 +49,7 @@ Looking at the final learned ${w_i}$, it can be seen that all perspectives are u
 % skill-dependent skill까지 하나의 plot으로 만드는게 나을듯
 
 % 실험 세팅 설명
+\subsubsection{State agnostic method}
 We compare our methods to default DIAYN fine-tune method implemented in URLB.
 We choose the task Walker-run for the comparison because it is the most challenging task among the twelve downstream tasks in URLB.
 We use a same pre-trained DIAYN policy for a fair comparison, and fine-tune each method for 100k steps.
@@ -91,9 +59,7 @@ All the methods are trained in end-to-end manner using DDPG which is a default f
 
 The parameters for these method serve to fuse the state viewed from various perspectives to help the agent obtain the optimal reward in a faster way.
 \emph{Fixed one weight} fine-tunes only for one best skill. As mentioned in Section \ref{section:method}, it costs for selecting the best skill,
-but we did not count the process in as a step to make a baseline more challenging.
-
-The default DIAYN method is blue line on \cref*{state agnostic results}, and all other methods exceed this baseline.
+but we did not count the process in as a step to make a baseline more challenging. The default DIAYN method is blue line on \cref*{state agnostic results}, and all other methods exceed this baseline.
 
 % 결과 해석
 % 사실 우리가 원하는 바는 fixed_one_weight의 성능이 나쁜 것인데...
@@ -109,35 +75,30 @@ but it is inappropriate as an approach that aim to achieve maximum performance i
 In fact, using only one fixed skill which is chosen at random far exceeds default DIAYN implemented in URLB.(Red line)
 This reveals that randomly changing skill at finetuning phase harms a performance a lot.
 
-While DIAYN and fixed one weight method uses only one skill, our proposed method utilizes all skills.
-Same skill weight assigns same importance to all skills and simple weight scheme learns to control skill weights to achieve better performance.
-Notable thing is that parameter-less same skill weight scheme outperformed all other methods.
-This is because just to open a way to use all the skills was enough to achieve good performance
-and it seems that changing skill weight is also possible by adjusting the weight of the latter layers of neural net.
-In other words, 
 % In \cref*{final_skill_weight}, we can check the agent use skills near evenly.
 % This allows for faster and better performance, as shown in the \cref{finetuning result}.
+\begin{figure}[ht]
+  \vskip 0.2in
+  \begin{center}
+  \centerline{\includegraphics[width=\columnwidth]{Figures/diayn_as_importance_predictor.png}}
+  \caption{State agnostic methods showed faster learning, but state aware method achieved better result at the end.}
+  \label{diayn-as-skill-weight}
+  \end{center}
+  \vskip -0.2in
+  \end{figure}
 
-State agnostic methods showed faster learning, but state aware method achieved better result at the end.
 
 %%% 여기서부터는 원래 다른 실험 (2M finetune)
 % \subsection{DIAYN as skill weight predictor}
+\subsubsection{State agnostic method}
 The second is to use the DIAYN module used in the pretrain phase as a skill weight predictor.
-
- But the performance was not good. This may be because the pretrain task does not perform a very good weight initializer role,
- or it may be because it is not good to change the weight of skill according to the state.
 
 % \subsubsection{Weight transfer from pretrained DIAYN}
 With the transfered weight from pretrained phase, DIAYN module learns to output the skill weight in end to end manner.
 However, the learning results were not good.
 There was a part where the performance deteriorated significantly for a certain period..
-
 % \subsubsection{Train from scratch}
-Although it recovered later, but even after recovery, it did not show imporoved performance than the baseline and didn't gain sample efficiency from weight transfer.
-We thought that DIAYN weight would be a good initializer as a skill weight predictor, the above experiment reveales we are wrong.
-Instead, we randomly init the weight with the intention of using it only as a module to determine the appropriate skill weight depending on the state.
-The results were rather better than transferred weight.
-This shows that the pretrain task was not very helpful in predicting how to fuse the skill together.
+
 
 %%% URLB와 same weight 비교하는 실험
 % 100k fine-tuning
@@ -162,15 +123,7 @@ evaluating a skill discovery methods.
 % It is noteworthy that the simplest state agnostic skill weight method among our proposed methods obtained the best performance. 
 
 
-\begin{figure}[ht]
-  \vskip 0.2in
-  \begin{center}
-  \centerline{\includegraphics[width=\columnwidth]{Figures/fair_weight_and_diayn_as_weight_predictor}}
-  \caption{}
-  \label{diayn-as-skill-weight}
-  \end{center}
-  \vskip -0.2in
-  \end{figure}
+
 
 % \subsection{MultiHeadAttention to attain several skill weight}
 % Third, we use MultiHeadAttention to have multiple the skill weights.

@@ -199,9 +199,39 @@ Code is available at $https://github.com/some-private$.
 \onecolumn
 \section{You \emph{can} have an appendix here.}
 
-You can have as much text here as you want. The main body must be at most $8$ pages long.
-For the final version, one more page can be added.
-If you want, you can use an appendix like this one, even using the one-column format.
+%% TABLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table*}[t]
+    \caption{Result of fine-tuning for $1 \times 10^5$ frames after pre-training for $2 \times 10^6$ frames.}
+    \label{table:result_urlb}
+    \vskip 0.15in
+    \begin{center}
+    \begin{small}
+    \begin{sc}
+    \begin{tabular}{lccccc}
+    % \begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}} ccccc}
+    \toprule
+    Domain & Task & Expert & Other best & Original DIAYN & Ours (same weight) \\
+    \midrule
+    Walker & Flip  & 799  & 515$\pm$17 &  381$\pm$17   & \textbf{658$\pm$51}\\
+           & Run   & 796  & 439$\pm$34 &  242$\pm$11   & \textbf{537$\pm$22}\\
+           & Stand & 984  & 923$\pm$9  &  860$\pm$26   & \textbf{936$\pm$11} \\
+           & Walk  & 971  & 828$\pm$29 &  661$\pm$26   & \textbf{917$\pm$23}\\
+    Quadruped & Jump  & 888  & 590$\pm$33  &  578$\pm$46  & \textbf{645$\pm$20} \\
+           & Run   & 888     & 465$\pm$37  &  415$\pm$28  & \textbf{558$\pm$43} \\
+           & Stand & 920     & \textbf{840$\pm$33}  &  706$\pm$48  & 719$\pm$158 \\
+           & Walk  & 866     & 721$\pm$56  &  406$\pm$64  & \textbf{845$\pm$74}  \\
+    Jaco & Reach bottom left   & 193 & 134$\pm$8 & 17$\pm$5   & \textbf{136$\pm$36}\\
+           & Reach bottom right& 203 & \textbf{122$\pm$4} & 31$\pm$4   & 119$\pm$39\\
+           & Reach top left    & 191 & 124$\pm$20 & 11$\pm$3   & \textbf{127$\pm$9}\\
+           & Reach top right   & 223 & \textbf{140$\pm$7}  & 19$\pm$4   & 138$\pm$42\\
+    \bottomrule
+    \end{tabular}
+    \end{sc}
+    \end{small}
+    \end{center}
+    \vskip -0.1in
+    \end{table*}
+   %% TABLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
